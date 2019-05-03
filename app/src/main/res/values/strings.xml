@@ -44,5 +44,23 @@
     <string name="all_taxis_fetched_success">تم جلب المعلومات بنجاح</string>
     <string name="taxisignup_success">تم اضافة تكسي جديد بنجاح</string>
     <string name="added_taxi_success">تمت الاضافة بنجاح</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_client">ClientActivity</string>
+    <string name="show_taxi_app">مشاهدة تطبيق التكسي</string>
+    <string name="show_office_app">فتح تطبيق المكاتب</string>
+    <string name="show_client_app">فتح تطبيق الزبائن</string>
+    <string name="add_new_order">اضافة طلب تكسي</string>
+    <string name="login_as_client">تسجيل كزبون جديد</string>
+    <string name="show_all_office_to_oreder_taxi">مشاهدة جميع المكاتب لطلب تكسي منها</string>
+    <string name="add_new_office">تسجيل مكتب تكسي جديد</string>
+    <string name="title_activity_add_new_client">AddNewClientActivity</string>
+    <string name="add_new_client">تسجيل زبون جديد</string>
+    <string name="signup_as_client_successfully">تم تسجيلك كزبون بنجاح</string>
+    <string name="title_activity_select_offieces">SelectOffiecesActivity</string>
+    <string name="title_activity_select_one_taxi_from_office">SelectOneTaxiFromOfficeActivity
+    </string>
+    <string name="call_this_taxi">اطلب هذه التكسي</string>
+    <string name="selecttaxi">اختر تكسي</string>
+    <string name="title_activity_calling_taxi">CallingTaxiActivity</string>
 
 </resources>

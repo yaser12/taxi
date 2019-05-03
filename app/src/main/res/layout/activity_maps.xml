@@ -24,6 +24,16 @@
         android:focusableInTouchMode="true"
         android:orientation="vertical"
         >
+
+        <EditText
+            android:id="@+id/editText2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:background="@color/common_google_signin_btn_text_dark_pressed"
+            android:text="اختر مكتب تكسي" />
+
         <androidbootstrap.BootstrapButton
             android:id="@+id/button2"
             style="@style/wrapping_button"

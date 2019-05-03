@@ -171,7 +171,7 @@ public class RealLocationActivity extends AppCompatActivity {
         String office_name=pref.getString("office_name","");
         office_nameTxt=findViewById(R.id.office_name);
 
-        office_nameTxt.setText(office_name);
+
         add_new_taxi_to_office=findViewById(R.id.add_new_taxi_to_office);
         show_all_taxi_for_office_idbtnButton=findViewById(R.id.show_all_taxi_for_office_idbtn);
 
@@ -182,6 +182,7 @@ public class RealLocationActivity extends AppCompatActivity {
         else {
             add_new_taxi_to_office.setVisibility(View.VISIBLE);
             show_all_taxi_for_office_idbtnButton.setVisibility(View.VISIBLE);
+            office_nameTxt.setText(office_name);
         }
 
         // Set labels.
@@ -484,12 +485,14 @@ public class RealLocationActivity extends AppCompatActivity {
         String office_idss=pref.getString("office_id","");
         String office_name=pref.getString("office_name","");
         office_nameTxt=findViewById(R.id.office_name);
-        office_nameTxt.setText("اسم المكتب : "+office_name);
+
         if(office_name== null || office_name.equals("")) {
+
             add_new_taxi_to_office.setVisibility(View.INVISIBLE);
             show_all_taxi_for_office_idbtnButton.setVisibility(View.INVISIBLE);
         }
         else {
+            office_nameTxt.setText("اسم المكتب : "+office_name);
             add_new_taxi_to_office.setVisibility(View.VISIBLE);
             show_all_taxi_for_office_idbtnButton.setVisibility(View.VISIBLE);
         }

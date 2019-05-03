@@ -2,9 +2,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:fitsSystemWindows="true"
-    tools:context="com.syriataxi.www.taxi.AddNewOfficeActivity">
+    tools:context="com.syriataxi.www.taxi.AddNewClientActivity">
 
 
     <android.support.constraint.ConstraintLayout
@@ -12,7 +12,7 @@
         android:layout_height="wrap_content">
 
         <fragment
-            android:id="@+id/addnewofficemap"
+            android:id="@+id/addnewclientmap"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="210dp"
@@ -30,12 +30,12 @@
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/innerNestedScrollView"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:layout_marginTop="38dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/addnewofficemap"
-            app:layout_constraintVertical_bias="1.0"
+            app:layout_constraintTop_toBottomOf="@+id/addnewclientmap"
+            app:layout_constraintVertical_bias="0.2"
             tools:ignore="MissingConstraints"
             tools:layout_editor_absoluteX="0dp">
 
@@ -50,29 +50,32 @@
                 android:padding="16dp">
 
                 <TextView
-                    android:id="@+id/contact_form_title"
+                    android:id="@+id/contactclient_form_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="16dp"
-                    android:text="@string/add_new_office"
+                    android:text="@string/add_new_client"
                     android:textColor="@color/bootstrap_brand_secondary_border"
                     android:textSize="40sp"
                     android:typeface="serif" />
 
                 <androidbootstrap.BootstrapAlert
-                    android:id="@+id/signup_success_alert"
+                    android:id="@+id/signupcleint_success_alert"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
+
+
                     app:bootstrapBrand="success"
                     app:dismissible="true"
-                    app:messageText="@string/signup_success"
+
+                    app:messageText="@string/signup_as_client_successfully"
                     app:strongText="@string/thanks_for_registeration" />
 
                 <androidbootstrap.BootstrapAlert
-                    android:id="@+id/network_not_available_alert"
+                    android:id="@+id/networkcleint_not_available_alert"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
@@ -82,7 +85,7 @@
                     app:strongText="@string/network_not_available" />
 
                 <androidbootstrap.BootstrapAlert
-                    android:id="@+id/some_faild_empty_alert"
+                    android:id="@+id/someclient_faild_empty_alert"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
@@ -93,17 +96,17 @@
                     app:strongText="تحقق من القيم!" />
 
                 <EditText
-                    android:id="@+id/name"
+                    android:id="@+id/enduser_name"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/colorPrimaryDark"
-                    android:hint="@string/office_name"
+                    android:hint="الاسم"
                     android:inputType="textPersonName"
                     android:textColor="@color/bootstrap_brand_secondary_border"
                     android:textColorHint="@color/bootstrap_brand_secondary_border" />
 
                 <EditText
-                    android:id="@+id/latitude"
+                    android:id="@+id/cleintlat"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -115,7 +118,7 @@
                     android:textColorHint="@color/bootstrap_brand_secondary_border" />
 
                 <EditText
-                    android:id="@+id/longitude"
+                    android:id="@+id/cleintlang"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/colorPrimaryDark"
@@ -125,7 +128,7 @@
                     android:textColorHint="@color/bootstrap_brand_secondary_border" />
 
                 <EditText
-                    android:id="@+id/office_username"
+                    android:id="@+id/cleintuser_name"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/colorPrimaryDark"
@@ -135,12 +138,23 @@
                     android:textColorHint="@color/bootstrap_brand_secondary_border" />
 
                 <EditText
-                    android:id="@+id/office_pass"
+                    android:id="@+id/cleintpass"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/colorPrimaryDark"
                     android:hint="@string/office_pass"
                     android:inputType="textPassword"
+
+                    android:textColor="@color/bootstrap_brand_secondary_fill"
+                    android:textColorHint="@color/bootstrap_brand_secondary_border" />
+
+                <EditText
+                    android:id="@+id/cleintphone"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/colorPrimaryDark"
+                    android:hint="ادخل رقم الهاتف"
+                    android:inputType="text"
 
                     android:textColor="@color/bootstrap_brand_secondary_fill"
                     android:textColorHint="@color/bootstrap_brand_secondary_border" />
@@ -162,7 +176,7 @@
                 <LinearLayout style="@style/progress_weight_container">
 
                     <androidbootstrap.BootstrapProgressBar
-                        android:id="@+id/example_progress_default"
+                        android:id="@+id/cleintexample_progress_default"
                         style="@style/progress_example"
 
                         app:animated="true"
@@ -173,13 +187,13 @@
                 </LinearLayout>
 
                 <androidbootstrap.BootstrapButton
-                    android:id="@+id/logInBtndbtn"
+                    android:id="@+id/cleintlogInBtndbtn"
                     style="@style/wrapping_button"
 
                     android:layout_width="match_parent"
                     android:layout_marginTop="3dp"
                     android:background="@color/colorPrimary"
-                    android:onClick="add_me_as_taxi_office"
+                    android:onClick="add_me_as_cleint_office"
                     android:text="@string/submit_new_office"
                     app:bootstrapBrand="warning"
                     app:roundedCorners="true" />

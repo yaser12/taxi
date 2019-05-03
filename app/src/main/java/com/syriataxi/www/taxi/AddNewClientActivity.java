@@ -1,22 +1,22 @@
 package com.syriataxi.www.taxi;
 
 import android.Manifest;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -38,93 +38,89 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Random;
 
 import androidbootstrap.BootstrapAlert;
 import androidbootstrap.BootstrapProgressBar;
 import androidbootstrap.api.defaults.DefaultBootstrapSize;
-import butterknife.BindView;
-import database.entity.Office;
-import database.entity.OfficeJsonFetcherService;
+import database.entity.EndUserJsonFetcherService;
+import database.entity.EndUserJsonFetcherService;
 import utility.NetworkHelper;
 import viewmodel.AddNewOfficeViewModel;
 
-import static utility.NetworkHelper.getValidint;
 
-public class AddNewOfficeActivity extends AppCompatActivity implements OnMapReadyCallback,GoogleMap.OnMarkerClickListener,GoogleMap.OnMapClickListener
-{
+public class AddNewClientActivity extends AppCompatActivity  implements OnMapReadyCallback,GoogleMap.OnMarkerClickListener,GoogleMap.OnMapClickListener {
+    private static final String TAG = AddNewClientActivity.class.getSimpleName();
+    public static final String  SHARED_NAME = "AddNewClientActivitysharedpreference";
     private Random random;
     private static final int ACCESS_FINE_LOCATION_CODE = 120;
-    private static final String TAG = AddNewOfficeActivity.class.getSimpleName();
-    public static final String  SHARED_NAME = "AddNewOfficeActivitysharedpreference";
-
     private GoogleMap googleMap;
     private AddNewOfficeViewModel mViewModel;
     BootstrapProgressBar sizeExample;
-         BootstrapAlert signup_success_alert;
-       BootstrapAlert network_not_available_alert;
+    BootstrapAlert signup_success_alert;
+    BootstrapAlert network_not_available_alert;
     BootstrapAlert some_faild_empty_alert;
-     // network_not_available_alert
-int number_trying= 1;
+    // network_not_available_alert
+    int number_trying= 1;
     private boolean networkOk;
     TextView output;
-    EditText name,office_username,office_pass,latitude,longitude;
+    EditText enduser_name,cleintuser_name,cleintpass,cleintlat,cleintlang,cleintphone;
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
 //            String message =
 //                    intent.getStringExtra(MyService.MY_SERVICE_PAYLOAD);
-            if(intent.getAction().equals(OfficeJsonFetcherService.ADD_NEW_OFFICE_MESSAGE))
+            if(intent.getAction().equals(EndUserJsonFetcherService.ADD_NEW_EndUse_MESSAGE))
             {
                 Log.v(TAG,"number_trying = "+number_trying);
-                    if(OfficeJsonFetcherService.ADD_NEW_OFFICE_PAYLOAD==null && number_trying<10)
+                if(EndUserJsonFetcherService.ADD_NEW_EndUse_PAYLOAD==null && number_trying<10)
+                {
+                    Log.v(TAG,"try again");
+                    add_me_as_cleint(); ;
+                    number_trying++;
+                }
+                else {
+                    Log.v(TAG,"try finish");
+                    countDownTimer.cancel();
+                    sizeExample.setVisibility(View.INVISIBLE);
+                    if(
+                            intent.getStringExtra(EndUserJsonFetcherService.ADD_NEW_EndUse_PAYLOAD)==null
+                                    ||
+                                    NetworkHelper.getValidint(intent.getStringExtra(EndUserJsonFetcherService.ADD_NEW_EndUse_PAYLOAD))<0
+                                    ||
+                                    intent.getStringExtra(EndUserJsonFetcherService.ADD_NEW_EndUse_PAYLOAD).equals("")
+                    )
                     {
-                        Log.v(TAG,"try again");
-                        add_me_as_taxi_office() ;
-                        number_trying++;
+                        signup_success_alert.dismiss(true);
+                        network_not_available_alert.show(true);
+
                     }
-                    else {
-                        Log.v(TAG,"try finish");
-                        countDownTimer.cancel();
-                        sizeExample.setVisibility(View.INVISIBLE);
-                        if(
-                          intent.getStringExtra(OfficeJsonFetcherService.ADD_NEW_OFFICE_PAYLOAD)==null
-                                ||
-                                  NetworkHelper.getValidint(intent.getStringExtra(OfficeJsonFetcherService.ADD_NEW_OFFICE_PAYLOAD))<0
-                                  ||
-                                intent.getStringExtra(OfficeJsonFetcherService.ADD_NEW_OFFICE_PAYLOAD).equals("")
-                        )
-                        {
-                            signup_success_alert.dismiss(true);
-                            network_not_available_alert.show(true);
+                    else
+                    {
+                        signup_success_alert.show(true);
+                        network_not_available_alert.dismiss(true);
+                        Log.d(TAG," EndUserJsonFetcherService.ADD_NEW_EndUse_PAYLOAD : "+intent.getStringExtra(EndUserJsonFetcherService.ADD_NEW_EndUse_PAYLOAD));
+                        SharedPreferences.Editor editor=getSharedPreferences(SHARED_NAME,MODE_PRIVATE).edit();
+                        editor.putString("cleintuser_name",cleintuser_name.getText().toString());
+                        editor.putString("cleintpass",cleintpass.getText().toString());
+                        editor.putString("EndUse_id",intent.getStringExtra(EndUserJsonFetcherService.ADD_NEW_EndUse_PAYLOAD));
+                        editor.putString("cleintphone",cleintphone.getText().toString());
 
-                        }
-                        else
-                        {
-                            signup_success_alert.show(true);
-                            network_not_available_alert.dismiss(true);
+                        editor.putString("enduser_name",enduser_name.getText().toString());
+                        editor.putString("cleintlat",cleintlat.getText().toString());
+                        editor.putString("cleintlang",cleintlang.getText().toString());
+                        editor.apply();
+                        SharedPreferences pref=getSharedPreferences(SHARED_NAME,MODE_PRIVATE);
+                        String EndUse_ids=pref.getString("EndUse_id","");
+                        output.setText(context.getString(R.string.youroffinenumber_is)+ EndUse_ids + "\n");
+                        /*
 
-                            SharedPreferences.Editor editor=getSharedPreferences(SHARED_NAME,MODE_PRIVATE).edit();
-                            editor.putString("office_username",office_username.getText().toString());
-                            editor.putString("office_pass",office_pass.getText().toString());
-                            editor.putString("office_id",intent.getStringExtra(OfficeJsonFetcherService.ADD_NEW_OFFICE_PAYLOAD));
-                            editor.putString("office_name",name.getText().toString());
-                            editor.putString("latitude",latitude.getText().toString());
-                            editor.putString("longitude",latitude.getText().toString());
-                            editor.apply();
-                            SharedPreferences pref=getSharedPreferences(SHARED_NAME,MODE_PRIVATE);
-                            String office_idss=pref.getString("office_id","");
-                            output.setText(context.getString(R.string.youroffinenumber_is)+ office_idss + "\n");
-                            /*
-
-                             */
-                        }
-
-                        number_trying=0;
+                         */
                     }
+
+                    number_trying=0;
+                }
 
             }
 
@@ -133,16 +129,15 @@ int number_trying= 1;
     };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_new_office);
-        output = (TextView) findViewById(R.id.contact_form_title);
-        name = (EditText) findViewById(R.id.name);
+        setContentView(R.layout.activity_add_new_client);
+        output = (TextView) findViewById(R.id.contactclient_form_title);
+        enduser_name = (EditText) findViewById(R.id.enduser_name);
 
-        office_username = (EditText) findViewById(R.id.office_username);
-        signup_success_alert=findViewById(R.id.signup_success_alert);
+        cleintuser_name = (EditText) findViewById(R.id.cleintuser_name);
+        signup_success_alert=findViewById(R.id.signupcleint_success_alert);
         signup_success_alert.dismiss(true);
-        sizeExample=findViewById(R.id.example_progress_default);
+        sizeExample=findViewById(R.id.cleintexample_progress_default);
         sizeExample.setVisibility(View.INVISIBLE);
         DefaultBootstrapSize size = DefaultBootstrapSize.SM;
 
@@ -155,24 +150,25 @@ int number_trying= 1;
 
         sizeExample.setBootstrapSize(size);
         sizeExample.setProgress(randomProgress(10, 1000));
-        some_faild_empty_alert=findViewById(R.id.some_faild_empty_alert);
+        some_faild_empty_alert=findViewById(R.id.someclient_faild_empty_alert);
         some_faild_empty_alert.dismiss(true);
-        office_pass= (EditText) findViewById(R.id.office_pass);
-        network_not_available_alert=findViewById(R.id.network_not_available_alert);
-        latitude=findViewById(R.id.latitude);
-        longitude=findViewById(R.id.longitude);
+        cleintpass= (EditText) findViewById(R.id.cleintpass);
+        network_not_available_alert=findViewById(R.id.networkcleint_not_available_alert);
+        cleintlat=findViewById(R.id.cleintlat);
+        cleintlang=findViewById(R.id.cleintlang);
+        cleintphone=findViewById(R.id.cleintphone);
         network_not_available_alert.dismiss(true);
 
         LocalBroadcastManager.getInstance(getApplicationContext())
                 .registerReceiver(mBroadcastReceiver,
-                        new IntentFilter(OfficeJsonFetcherService.ADD_NEW_OFFICE_MESSAGE));
+                        new IntentFilter(EndUserJsonFetcherService.ADD_NEW_EndUse_MESSAGE));
         networkOk = NetworkHelper.hasNetworkAccess(this);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.addnewofficemap);
+                .findFragmentById(R.id.addnewclientmap);
 
-      //  mapFragment.get
+        //  mapFragment.get
         mapFragment.getMapAsync(this);
 
         if (!Utils.isConnectedToInternet(this)) {
@@ -233,8 +229,78 @@ int number_trying= 1;
             }
         });
 
-       // countDownTimer.start();
+        // countDownTimer.start();
         // countDownTimer.cancel();
+
+
+    }
+
+    public void add_me_as_cleint_office(View view)
+    {
+
+        if(check_empty_faild())
+        {
+            some_faild_empty_alert.dismiss(true);
+            add_me_as_cleint();
+        }
+        else
+        {
+            some_faild_empty_alert.show(true);
+        }
+    }
+    private  void add_me_as_cleint()
+    {
+        //  office_name=lattakia&lang=22.33&lat=33.44&office_username=ali&office_pass=lat2468
+        networkOk = NetworkHelper.hasNetworkAccess(this);
+
+        if (networkOk)
+        {
+            network_not_available_alert.dismiss(true);
+            sizeExample.setVisibility(View.VISIBLE);
+            countDownTimer.start();
+            LocalBroadcastManager.getInstance(getApplicationContext())
+                    .registerReceiver(mBroadcastReceiver,
+                            new IntentFilter(EndUserJsonFetcherService.ADD_NEW_EndUse_MESSAGE));
+
+            String enduser_namestr=null;
+            String cleintlangStr=null;
+            String cleintlatStr=null;
+            String cleintpassStr=null;
+            String cleintuser_nameStr=null;
+            String cleintphoneStr=null;
+
+            enduser_namestr= Uri.encode(enduser_name.getText().toString(), "UTF-8");
+            cleintphoneStr= Uri.encode(cleintphone.getText().toString(), "UTF-8");
+            cleintlangStr=Uri.encode(cleintlat.getText().toString(), "UTF-8");
+            cleintlatStr=Uri.encode(cleintlang.getText().toString(), "UTF-8");
+            cleintpassStr=Uri.encode(cleintpass.getText().toString(), "UTF-8");
+            cleintuser_nameStr=Uri.encode(cleintuser_name.getText().toString(), "UTF-8");
+
+
+
+            String urltosend=EndUserJsonFetcherService.ADD_NEW_EndUse_JSON_URL+"enduser_name="+enduser_namestr+"&lang="+cleintlangStr+"&lat="+cleintlatStr+"&user_name="+cleintuser_nameStr+"&pass="+cleintpassStr+"&phone="+cleintphoneStr;
+            // enduser_name=ahmad&lang=44.5555&lat=55.6666&user_name=ali&pass=aassdd&phone=0998888
+            Log.v(TAG,"urltosend = "+urltosend);
+            Intent intent = new Intent(this, EndUserJsonFetcherService.class);
+            intent.setAction(EndUserJsonFetcherService.ADD_NEW_EndUse_MESSAGE);
+            intent.setData(Uri.parse(urltosend));
+            number_trying=0;
+            startService(intent);
+
+        } else {
+            // Toast.makeText(this, "Network not available!", Toast.LENGTH_SHORT).show();
+            network_not_available_alert.show(true);
+        }
+    }
+    public boolean check_empty_faild()
+    {
+        Log.v(TAG," name.getText().toString() = "+ enduser_name.getText().toString().trim());
+        if(enduser_name.getText()==null ||  enduser_name.getText().toString().trim().equals( "") ) return false;
+        if(cleintuser_name.getText()==null ||  cleintuser_name.getText().toString().trim().equals( "")  ) return false;
+        if(cleintpass.getText()==null ||  cleintpass.getText().toString().trim() .equals( "") ) return false;
+        if(cleintlat.getText()==null ||  cleintlat.getText().toString().trim().equals( "")  ) return false;
+        if(cleintlang.getText()==null ||  cleintlang.getText().toString().trim().equals( "") ) return false;
+        return  true;
     }
     CountDownTimer countDownTimer = new CountDownTimer(60 * 1000, 1000) {
         public void onTick(long millisUntilFinished) {
@@ -261,8 +327,6 @@ int number_trying= 1;
 
         return prog;
     }
-
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this. googleMap= googleMap;
@@ -287,8 +351,8 @@ int number_trying= 1;
 
                 ArrayList<LocationsData> locationsDatas = LocationsData.getData();
                 for (LocationsData data : locationsDatas) {
-                  //  MarkerOptions marker = new MarkerOptions().position(data.location).title(data.title);
-                   // marker.icon(data.bitmapDescriptor);
+                    //  MarkerOptions marker = new MarkerOptions().position(data.location).title(data.title);
+                    // marker.icon(data.bitmapDescriptor);
                     //googleMap.addMarker(marker);
                     //
                     builder.include(data.location);
@@ -308,27 +372,17 @@ int number_trying= 1;
 
     }
     @Override
-    public boolean onMarkerClick(Marker marker) {
-        Toast.makeText(this,""+marker.getTitle(),Toast.LENGTH_SHORT).show();
-        return false;
-
-    }
-
-    private void initViewModel() {
-        mViewModel = ViewModelProviders.of(this)
-                .get(AddNewOfficeViewModel.class);
-    }
-
-    @Override
     public void onMapClick(LatLng latLng) {
+
         // Creating a marker
         MarkerOptions marker = new MarkerOptions().title("new office");
         BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.mipmap.marker);
         marker.icon(bitmapDescriptor);
         // Setting the position for the marker
+
         marker.position(latLng);
-        latitude.setText(latLng.latitude+"");
-        longitude.setText(latLng.longitude+"");
+        cleintlat.setText(latLng.latitude+"");
+        cleintlang.setText(latLng.longitude+"");
         // Setting the title for the marker.
         // This will be displayed on taping the marker
         // markerOptions.title(latLng.latitude + " : " + latLng.longitude);
@@ -341,71 +395,11 @@ int number_trying= 1;
 
         // Placing a marker on the touched position
         googleMap.addMarker(marker);
-    }
-private  void add_me_as_taxi_office()
-{
-    //  office_name=lattakia&lang=22.33&lat=33.44&office_username=ali&office_pass=lat2468
-    networkOk = NetworkHelper.hasNetworkAccess(this);
-
-    if (networkOk)
-    {
-        network_not_available_alert.dismiss(true);
-        sizeExample.setVisibility(View.VISIBLE);
-        countDownTimer.start();
-        LocalBroadcastManager.getInstance(getApplicationContext())
-                .registerReceiver(mBroadcastReceiver,
-                        new IntentFilter(OfficeJsonFetcherService.ADD_NEW_OFFICE_MESSAGE));
-        String office_namestr=null;
-        String langStr=null;
-        String latStr=null;
-        String office_passStr=null;
-        String office_usernameStr=null;
-
-            office_namestr= Uri.encode(name.getText().toString(), "UTF-8");
-            langStr=Uri.encode(latitude.getText().toString(), "UTF-8");
-            latStr=Uri.encode(longitude.getText().toString(), "UTF-8");
-            office_passStr=Uri.encode(office_pass.getText().toString(), "UTF-8");
-            office_usernameStr=Uri.encode(office_username.getText().toString(), "UTF-8");
-
-
-
-        String urltosend=OfficeJsonFetcherService.ADD_NEW_OFFICE_JSON_URL+"office_name="+office_namestr+"&lang="+langStr+"&lat="+latStr+"&office_pass="+office_passStr+"&office_username="+office_usernameStr;
-        Log.v(TAG,"urltosend = "+urltosend);
-        Intent intent = new Intent(this, OfficeJsonFetcherService.class);
-        intent.setAction(OfficeJsonFetcherService.ADD_NEW_OFFICE_MESSAGE);
-        intent.setData(Uri.parse(urltosend));
-        number_trying=0;
-        startService(intent);
-
-    } else {
-       // Toast.makeText(this, "Network not available!", Toast.LENGTH_SHORT).show();
-        network_not_available_alert.show(true);
-    }
-}
-
-    public void add_me_as_taxi_office(View view)
-    {
-        if(check_empty_faild())
-        {
-            some_faild_empty_alert.dismiss(true);
-            add_me_as_taxi_office();
-        }
-        else
-        {
-
-            some_faild_empty_alert.show(true);
-        }
 
     }
-    public boolean check_empty_faild()
-    {
-        Log.v(TAG," name.getText().toString() = "+ name.getText().toString().trim());
-        if(name.getText()==null ||  name.getText().toString().trim().equals( "") ) return false;
-        if(office_username.getText()==null ||  office_username.getText().toString().trim().equals( "")  ) return false;
-        if(office_pass.getText()==null ||  office_pass.getText().toString().trim() .equals( "") ) return false;
-        if(latitude.getText()==null ||  latitude.getText().toString().trim().equals( "")  ) return false;
-        if(longitude.getText()==null ||  longitude.getText().toString().trim().equals( "") ) return false;
-        return  true;
-    }
 
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        return false;
+    }
 }
